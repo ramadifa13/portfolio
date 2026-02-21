@@ -42,7 +42,7 @@ const skillSchema = z.object({
   category: z.string().min(1, "Category is required"),
   proficiency: z.number().min(0).max(100),
   icon: z.string().optional(),
-  featured: z.boolean().default(false),
+  featured: z.boolean().optional(),
 });
 
 type SkillFormValues = z.infer<typeof skillSchema>;
@@ -60,8 +60,9 @@ export default function SkillForm({ initialData }: SkillFormProps) {
     defaultValues: initialData
       ? {
           ...initialData,
-          icon: initialData.icon || "",
-          proficiency: initialData.proficiency || 0,
+          icon: initialData.icon ?? "",
+          proficiency: initialData.proficiency ?? 0,
+          featured: initialData.featured ?? false,
         }
       : {
           name: "",
