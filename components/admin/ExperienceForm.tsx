@@ -58,6 +58,10 @@ export default function ExperienceForm({ initialData }: ExperienceFormProps) {
           location: initialData.location || "",
           end_date: initialData.end_date || "",
           description: initialData.description || "",
+          is_current:
+            typeof initialData.is_current === "boolean"
+              ? initialData.is_current
+              : false,
         }
       : {
           company: "",
