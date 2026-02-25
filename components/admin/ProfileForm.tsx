@@ -20,7 +20,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   Loader2,
   Sparkles,
-  User,
   Github,
   Linkedin,
   Twitter,
@@ -30,6 +29,7 @@ import {
 import { updateProfile } from "@/lib/actions/profile";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Database } from "@/types/database";
 
 const profileSchema = z.object({
   full_name: z.string().min(1, "Full name is required"),
@@ -44,7 +44,7 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 
 interface ProfileFormProps {
   userId: string;
-  initialData: any;
+  initialData: Database["public"]["Tables"]["profiles"]["Row"] | null;
 }
 
 export default function ProfileForm({ userId, initialData }: ProfileFormProps) {

@@ -4,7 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { Database } from "@/types/database";
 
-type Project = Database["public"]["Tables"]["projects"]["Row"];
 type ProjectInsert = Database["public"]["Tables"]["projects"]["Insert"];
 type ProjectUpdate = Database["public"]["Tables"]["projects"]["Update"];
 
@@ -61,7 +60,7 @@ export async function uploadProjectImage(file: File) {
   const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
   const filePath = `projects/${fileName}`;
 
-  const { error: uploadError, data } = await supabase.storage
+  const { error: uploadError } = await supabase.storage
     .from("images")
     .upload(filePath, file);
 

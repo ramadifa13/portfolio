@@ -14,16 +14,17 @@ import { motion } from "framer-motion";
 import { Database } from "@/types/database";
 
 type Skill = Database["public"]["Tables"]["skills"]["Row"];
+type SkillEntry = Pick<Skill, "id" | "name" | "category" | "proficiency">;
 
 export default function SkillsPage() {
-  const [skills, setSkills] = useState<Skill[]>([]);
+  const [skills, setSkills] = useState<SkillEntry[]>([]);
 
   useEffect(() => {
     async function fetchSkills() {
       const supabase = createClient();
       const { data } = await supabase
         .from("skills")
-        .select("*")
+        .select("id,name,category,proficiency")
         .order("proficiency", { ascending: false });
 
       if (data) setSkills(data);
@@ -34,32 +35,33 @@ export default function SkillsPage() {
   const categories = Array.from(new Set(skills.map((s) => s.category)));
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 min-h-screen">
+    <div className="mx-auto min-h-screen max-w-7xl px-4 py-12 sm:px-6 md:py-20 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-3xl mb-24"
+        className="mb-14 max-w-3xl md:mb-24"
       >
-        <h1 className="text-5xl md:text-7xl font-black text-white leading-tight mb-8">
-          Technical <span className="text-indigo-400">Stack.</span>
+        <h1 className="mb-6 text-4xl leading-tight font-black text-foreground sm:text-5xl md:mb-8 md:text-7xl">
+          Technical{" "}
+          <span className="text-sky-600 dark:text-indigo-400">Stack.</span>
         </h1>
-        <p className="text-xl text-zinc-400 leading-relaxed">
+        <p className="text-base leading-relaxed text-muted-foreground md:text-xl">
           A comprehensive overview of my technical capabilities and the
           technologies I use to build robust, scalable applications.
         </p>
       </motion.div>
 
-      <div className="space-y-24">
+      <div className="space-y-14 md:space-y-24">
         {categories.map((category) => (
           <section key={category}>
-            <div className="flex items-center gap-4 mb-12">
-              <h2 className="text-sm font-black uppercase tracking-[0.3em] text-indigo-400 px-4 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">
+            <div className="mb-8 flex items-center gap-4 md:mb-12">
+              <h2 className="rounded-full border border-sky-500/20 bg-sky-500/8 px-4 py-1 text-xs font-black uppercase tracking-[0.3em] text-sky-600 dark:text-indigo-300 md:text-sm">
                 {category}
               </h2>
-              <div className="h-px bg-linear-to-r from-indigo-500/20 to-transparent flex-1"></div>
+              <div className="h-px flex-1 bg-linear-to-r from-sky-500/25 to-transparent dark:from-indigo-500/20"></div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-6 lg:grid-cols-5">
               {skills
                 .filter((s) => s.category === category)
                 .map((skill, idx) => (
@@ -71,31 +73,31 @@ export default function SkillsPage() {
                     transition={{ delay: idx * 0.05 }}
                     className="group"
                   >
-                    <div className="bg-zinc-900/40 backdrop-blur-sm border border-white/5 rounded-3xl p-8 flex flex-col items-center justify-center text-center hover:border-indigo-500/30 hover:bg-zinc-900 transition-all h-full relative overflow-hidden">
+                    <div className="relative flex h-full flex-col items-center justify-center overflow-hidden rounded-3xl border border-border/70 bg-card/70 p-5 text-center backdrop-blur-sm transition-all hover:border-sky-500/30 hover:bg-card/90 md:p-8 dark:hover:border-indigo-500/30">
                       {/* Subtle Sparkle background */}
-                      <div className="absolute -top-4 -right-4 text-indigo-500/10 group-hover:text-indigo-500/20 transition-colors">
+                      <div className="absolute -right-4 -top-4 text-sky-500/10 transition-colors group-hover:text-sky-500/20 dark:text-indigo-500/10 dark:group-hover:text-indigo-500/20">
                         <Sparkles size={80} />
                       </div>
 
-                      <div className="mb-6 p-4 rounded-2xl bg-black border border-white/5 text-zinc-500 group-hover:text-indigo-400 transition-all scale-110 group-hover:scale-125 duration-500">
+                      <div className="mb-4 scale-110 rounded-2xl border border-border bg-background p-3 text-muted-foreground transition-all duration-500 group-hover:scale-125 group-hover:text-sky-600 md:mb-6 md:p-4 dark:group-hover:text-indigo-400">
                         {getCategoryIcon(category)}
                       </div>
 
-                      <h3 className="font-black text-white text-lg mb-2">
+                      <h3 className="mb-2 text-base font-black text-foreground md:text-lg">
                         {skill.name}
                       </h3>
 
-                      <div className="w-full mt-4 h-1 bg-zinc-800 rounded-full overflow-hidden">
+                      <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-background">
                         <motion.div
                           initial={{ width: 0 }}
-                          whileInView={{ width: `${skill.proficiency}%` }}
+                          whileInView={{ width: `${skill.proficiency ?? 0}%` }}
                           viewport={{ once: true }}
                           transition={{ duration: 1, delay: 0.2 }}
-                          className="h-full bg-linear-to-r from-indigo-500 to-purple-500"
+                          className="h-full bg-linear-to-r from-sky-500 to-indigo-500"
                         />
                       </div>
-                      <p className="mt-3 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
-                        {skill.proficiency}% Proficiency
+                      <p className="mt-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                        {skill.proficiency ?? 0}% Proficiency
                       </p>
                     </div>
                   </motion.div>

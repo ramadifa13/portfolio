@@ -25,14 +25,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Loader2,
-  Sparkles,
-  Code2,
-  Layers,
-  TrendingUp,
-  Info,
-} from "lucide-react";
+import { Loader2, Sparkles, Info } from "lucide-react";
 import { createSkill, updateSkill } from "@/lib/actions/skills";
 import { Database } from "@/types/database";
 import { Slider } from "@/components/ui/slider";

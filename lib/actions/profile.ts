@@ -2,8 +2,11 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { Database } from "@/types/database";
 
-export async function updateProfile(id: string, data: any) {
+type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"];
+
+export async function updateProfile(id: string, data: ProfileUpdate) {
   const supabase = await createClient();
 
   const { error } = await supabase

@@ -8,26 +8,30 @@ import { motion } from "framer-motion";
 import { Database } from "@/types/database";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+type AboutProfile = Pick<Profile, "bio">;
 
 export default function AboutPage() {
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<AboutProfile | null>(null);
 
   useEffect(() => {
     async function fetchProfile() {
       const supabase = createClient();
-      const { data } = await supabase.from("profiles").select("*").single();
+      const { data } = await supabase
+        .from("profiles")
+        .select("bio")
+        .single();
       if (data) setProfile(data);
     }
     fetchProfile();
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 min-h-screen">
-      <div className="grid gap-20 lg:grid-cols-2 items-center">
+    <div className="mx-auto min-h-screen max-w-7xl px-4 py-12 sm:px-6 md:py-20 lg:px-8">
+      <div className="grid items-center gap-12 md:gap-20 lg:grid-cols-2">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
-          className="space-y-12"
+          className="space-y-8 md:space-y-12"
         >
           <div className="space-y-6">
             <motion.div
@@ -37,22 +41,22 @@ export default function AboutPage() {
             >
               <Badge
                 variant="outline"
-                className="bg-indigo-500/10 border-indigo-500/20 text-indigo-400 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.2em]"
+                className="rounded-full border-sky-500/20 bg-sky-500/8 px-4 py-1.5 text-xs font-black uppercase tracking-[0.2em] text-sky-600 dark:text-indigo-300"
               >
                 The Creator
               </Badge>
             </motion.div>
-            <h1 className="text-6xl md:text-8xl font-black text-white leading-[0.95] tracking-tighter">
+            <h1 className="text-4xl leading-[0.95] font-black tracking-tighter text-foreground sm:text-6xl md:text-8xl">
               Crafting <br />
-              <span className="bg-linear-to-r from-indigo-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-sky-500 via-indigo-400 to-emerald-500 bg-clip-text text-transparent">
                 Digital
               </span>{" "}
               <br />
-              <span className="text-white">Masterpieces.</span>
+              <span className="text-foreground">Masterpieces.</span>
             </h1>
           </div>
 
-          <div className="space-y-8 text-xl text-zinc-400 leading-relaxed font-medium max-w-xl">
+          <div className="max-w-xl space-y-6 text-base leading-relaxed font-medium text-muted-foreground md:space-y-8 md:text-xl">
             {profile?.bio ? (
               <div className="whitespace-pre-wrap">{profile.bio}</div>
             ) : (
@@ -75,7 +79,7 @@ export default function AboutPage() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
             <AboutMetric
               icon={Terminal}
               title="Clean Code"
@@ -97,33 +101,35 @@ export default function AboutPage() {
           transition={{ duration: 1, ease: "easeOut" }}
           className="relative"
         >
-          <div className="absolute -inset-10 border border-white/5 rounded-full animate-[spin_20s_linear_infinite] pointer-events-none"></div>
-          <div className="absolute -inset-20 border border-white/5 rounded-full animate-[spin_30s_linear_infinite_reverse] pointer-events-none opacity-50"></div>
+          <div className="pointer-events-none absolute -inset-10 rounded-full border border-border/50 motion-safe:animate-[spin_20s_linear_infinite]"></div>
+          <div className="pointer-events-none absolute -inset-20 rounded-full border border-border/45 opacity-50 motion-safe:animate-[spin_30s_linear_infinite_reverse]"></div>
 
-          <div className="aspect-4/5 rounded-[4rem] overflow-hidden border border-white/10 bg-zinc-900 shadow-2xl group relative">
-            <div className="absolute inset-0 bg-[#0c0c0e]">
-              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(79,70,229,0.15),transparent_70%)] opacity-50"></div>
+          <div className="group relative aspect-4/5 overflow-hidden rounded-[2.6rem] border border-border/60 bg-card shadow-2xl md:rounded-[4rem]">
+            <div className="absolute inset-0 bg-background">
+              <div className="absolute left-0 top-0 h-full w-full bg-[radial-gradient(circle_at_50%_50%,rgba(37,99,235,0.16),transparent_70%)] opacity-50"></div>
             </div>
 
-            <div className="absolute inset-0 z-10 p-12 flex flex-col justify-end">
+            <div className="absolute inset-0 z-10 flex flex-col justify-end p-7 md:p-12">
               <div className="space-y-8">
                 <div className="flex gap-3">
                   {["Senior", "Fullstack", "Architect"].map((tag) => (
                     <span
                       key={tag}
-                      className="text-[10px] font-black uppercase tracking-widest text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full backdrop-blur-md"
+                      className="rounded-full border border-sky-500/20 bg-sky-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-sky-600 backdrop-blur-md dark:text-indigo-300"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
 
-                <h2 className="text-4xl font-black text-white italic leading-none">
+                <h2 className="text-3xl leading-none font-black italic text-foreground md:text-4xl">
                   &quot;Turning complex <br /> logic into <br />{" "}
-                  <span className="text-indigo-400">elegant art.&quot;</span>
+                  <span className="text-sky-600 dark:text-indigo-400">
+                    elegant art.&quot;
+                  </span>
                 </h2>
 
-                <div className="pt-8 border-t border-white/10 flex items-center justify-between"></div>
+                <div className="flex items-center justify-between border-t border-border/60 pt-8"></div>
               </div>
             </div>
 
@@ -136,15 +142,15 @@ export default function AboutPage() {
       </div>
 
       {/* Philosophy Section */}
-      <section className="mt-40 space-y-16">
+      <section className="mt-20 space-y-10 md:mt-40 md:space-y-16">
         <div className="flex items-center gap-6">
-          <h2 className="text-sm font-black uppercase tracking-[0.4em] text-zinc-500">
+          <h2 className="text-xs font-black uppercase tracking-[0.4em] text-muted-foreground md:text-sm">
             My Principles
           </h2>
-          <div className="h-px bg-white/5 flex-1"></div>
+          <div className="h-px flex-1 bg-border"></div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid gap-5 md:grid-cols-3 md:gap-8">
           <PrincipleCard
             icon={Terminal}
             title="Readability over Cleverness"
@@ -177,21 +183,21 @@ function AboutMetric({
   desc: string;
   color: "indigo" | "emerald";
 }) {
-  const colors = {
+  const colors: Record<"indigo" | "emerald", string> = {
     indigo: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
     emerald: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
   };
 
   return (
     <div
-      className={`p-8 rounded-4xl border bg-zinc-900/40 backdrop-blur-sm group hover:scale-[1.02] transition-transform duration-500 ${(colors as any)[color]}`}
+      className={`group rounded-4xl border bg-card/70 p-6 backdrop-blur-sm transition-transform duration-500 hover:scale-[1.02] md:p-8 ${colors[color]}`}
     >
       <Icon
         size={32}
         className="mb-6 opacity-80 group-hover:opacity-100 transition-opacity"
       />
-      <h3 className="text-white font-black text-lg mb-1">{title}</h3>
-      <p className="text-zinc-500 text-sm font-medium">{desc}</p>
+      <h3 className="mb-1 text-lg font-black text-foreground">{title}</h3>
+      <p className="text-sm font-medium text-muted-foreground">{desc}</p>
     </div>
   );
 }
@@ -208,15 +214,15 @@ function PrincipleCard({
   return (
     <motion.div
       whileHover={{ y: -5 }}
-      className="p-10 rounded-[2.5rem] bg-zinc-900/50 border border-white/5 hover:border-indigo-500/30 transition-all group"
+      className="group rounded-[2rem] border border-border/70 bg-card/70 p-7 transition-all hover:border-sky-500/30 md:rounded-[2.5rem] md:p-10 dark:hover:border-indigo-500/30"
     >
-      <div className="mb-10 w-14 h-14 rounded-2xl bg-black flex items-center justify-center text-indigo-400 border border-white/5 group-hover:shadow-[0_0_20px_rgba(79,70,229,0.2)] transition-all">
+      <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-2xl border border-border bg-background text-sky-600 transition-all group-hover:shadow-[0_0_20px_rgba(14,165,233,0.2)] dark:text-indigo-400 md:mb-10 md:h-14 md:w-14">
         <Icon size={24} />
       </div>
-      <h3 className="text-2xl font-black text-white mb-4 leading-tight">
+      <h3 className="mb-4 text-xl leading-tight font-black text-foreground md:text-2xl">
         {title}
       </h3>
-      <p className="text-zinc-400 leading-relaxed font-medium">{text}</p>
+      <p className="font-medium leading-relaxed text-muted-foreground">{text}</p>
     </motion.div>
   );
 }

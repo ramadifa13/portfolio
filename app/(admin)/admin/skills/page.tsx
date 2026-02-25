@@ -1,9 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
-import { Plus, Edit, Trash2, Code2, Sparkles, TrendingUp } from "lucide-react";
+import { Plus, Edit, Trash2, Code2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Database } from "@/types/database";
+
+type Skill = Database["public"]["Tables"]["skills"]["Row"];
 
 export default async function SkillsPage() {
   const supabase = await createClient();
@@ -14,7 +17,7 @@ export default async function SkillsPage() {
     .order("category", { ascending: true });
 
   // Group skills by category
-  const groupedSkills = skills?.reduce((acc: any, skill) => {
+  const groupedSkills = skills?.reduce<Record<string, Skill[]>>((acc, skill) => {
     if (!acc[skill.category]) acc[skill.category] = [];
     acc[skill.category].push(skill);
     return acc;
@@ -57,8 +60,8 @@ export default async function SkillsPage() {
         </Card>
       ) : (
         <div className="space-y-12">
-          {Object.entries(groupedSkills).map(
-            ([category, categorySkills]: [string, any]) => (
+          {Object.entries(groupedSkills ?? {}).map(
+            ([category, categorySkills]) => (
               <div key={category} className="space-y-6">
                 <div className="flex items-center gap-3">
                   <div className="h-px flex-1 bg-white/5"></div>
@@ -69,7 +72,7 @@ export default async function SkillsPage() {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {categorySkills.map((skill: any) => (
+                  {categorySkills.map((skill) => (
                     <div
                       key={skill.id}
                       className="group relative p-4 rounded-3xl border border-white/5 bg-zinc-900/50 backdrop-blur-sm hover:bg-zinc-800/80 transition-all duration-300"

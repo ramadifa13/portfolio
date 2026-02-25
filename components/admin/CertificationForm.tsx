@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Sparkles, Award, Calendar, Globe, Info } from "lucide-react";
 import { useState } from "react";
+import { Database } from "@/types/database";
+
+type CertificationRow = Database["public"]["Tables"]["certifications"]["Row"];
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -35,20 +38,35 @@ const formSchema = z.object({
     .or(z.string().length(0)),
 });
 
-export function CertificationForm({ initialData }: { initialData?: any }) {
+type CertificationFormValues = z.infer<typeof formSchema>;
+
+export function CertificationForm({
+  initialData,
+}: {
+  initialData?: CertificationRow;
+}) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
+  const defaultValues: CertificationFormValues = initialData
+    ? {
+        name: initialData.name,
+        issuer: initialData.issuer,
+        issue_date: initialData.issue_date ?? "",
+        credential_url: initialData.credential_url ?? "",
+      }
+    : {
       name: "",
       issuer: "",
       issue_date: "",
       credential_url: "",
-    },
+    };
+
+  const form = useForm<CertificationFormValues>({
+    resolver: zodResolver(formSchema) as Resolver<CertificationFormValues>,
+    defaultValues,
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: CertificationFormValues) {
     setLoading(true);
     try {
       if (initialData) {
@@ -60,7 +78,7 @@ export function CertificationForm({ initialData }: { initialData?: any }) {
       }
       router.push("/admin/certifications");
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Process failed. Please try again.");
     } finally {
       setLoading(false);

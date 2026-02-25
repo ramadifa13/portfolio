@@ -1,44 +1,51 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
-import { Badge } from "@/components/ui/badge";
 import { Award, Calendar, ExternalLink, ShieldCheck } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
+interface Certification {
+  id: string;
+  name: string;
+  issuer: string;
+  issue_date: string | null;
+  credential_url: string | null;
+}
+
 export default function CertificationsPage() {
-  const [certs, setCerts] = useState<any[]>([]);
+  const [certs, setCerts] = useState<Certification[]>([]);
 
   useEffect(() => {
     async function fetchCerts() {
       const supabase = createClient();
       const { data } = await supabase
         .from("certifications")
-        .select("*")
+        .select("id,name,issuer,issue_date,credential_url")
         .order("issue_date", { ascending: false });
 
-      if (data) setCerts(data);
+      if (data) setCerts(data as Certification[]);
     }
     fetchCerts();
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 min-h-screen">
+    <div className="mx-auto min-h-screen max-w-7xl px-4 py-12 sm:px-6 md:py-20 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-3xl mb-24"
+        className="mb-14 max-w-3xl md:mb-24"
       >
-        <h1 className="text-5xl md:text-7xl font-black text-white leading-tight mb-8">
-          Verified <span className="text-indigo-400">Excellence.</span>
+        <h1 className="mb-6 text-4xl leading-tight font-black text-foreground sm:text-5xl md:mb-8 md:text-7xl">
+          Verified <span className="text-sky-600 dark:text-indigo-400">Excellence.</span>
         </h1>
-        <p className="text-xl text-zinc-400 leading-relaxed">
+        <p className="text-base leading-relaxed text-muted-foreground md:text-xl">
           Professional certifications and credentials that validate my expertise
           across various domains of software engineering.
         </p>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
         {certs.map((cert, idx) => (
           <motion.div
             key={cert.id}
@@ -48,22 +55,24 @@ export default function CertificationsPage() {
             transition={{ delay: idx * 0.1 }}
             className="group"
           >
-            <div className="bg-zinc-900/40 backdrop-blur-sm border border-white/5 rounded-[2rem] p-10 h-full flex flex-col hover:border-indigo-500/30 transition-all relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
+            <div className="relative flex h-full flex-col overflow-hidden rounded-[1.7rem] border border-border/70 bg-card/72 p-7 transition-all hover:border-sky-500/30 md:rounded-[2rem] md:p-10 dark:hover:border-indigo-500/30">
+              <div className="absolute right-0 top-0 p-6 opacity-[0.03] transition-opacity group-hover:opacity-[0.06] md:p-8">
                 <ShieldCheck size={120} />
               </div>
 
-              <div className="w-16 h-16 rounded-2xl bg-black border border-white/5 flex items-center justify-center text-indigo-400 mb-8 shadow-xl">
-                <Award size={32} />
+              <div className="mb-7 flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-background text-sky-600 shadow-xl dark:text-indigo-400 md:mb-8 md:h-16 md:w-16">
+                <Award size={28} />
               </div>
 
               <div className="flex-1">
-                <h3 className="text-2xl font-black text-white mb-3 group-hover:text-indigo-400 transition-colors leading-tight">
+                <h3 className="mb-3 text-xl leading-tight font-black text-foreground transition-colors group-hover:text-sky-600 dark:group-hover:text-indigo-400 md:text-2xl">
                   {cert.name}
                 </h3>
-                <p className="text-zinc-400 font-bold mb-6">{cert.issuer}</p>
+                <p className="mb-5 font-bold text-muted-foreground md:mb-6">
+                  {cert.issuer}
+                </p>
 
-                <div className="flex items-center gap-2 text-zinc-500 text-sm mb-8 font-medium">
+                <div className="mb-7 flex items-center gap-2 text-sm font-medium text-muted-foreground md:mb-8">
                   <Calendar size={14} />
                   Issued{" "}
                   {cert.issue_date
@@ -79,12 +88,13 @@ export default function CertificationsPage() {
                 <a
                   href={cert.credential_url}
                   target="_blank"
-                  className="inline-flex items-center gap-2 font-bold text-sm text-indigo-400 hover:text-indigo-300 transition-colors group/link"
+                  rel="noopener noreferrer"
+                  className="group/link inline-flex items-center gap-2 text-sm font-bold text-sky-600 transition-colors hover:text-sky-700 dark:text-indigo-400 dark:hover:text-indigo-300"
                 >
                   View Credential{" "}
                   <ExternalLink
                     size={14}
-                    className="group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-transform"
+                    className="transition-transform group-hover/link:-translate-y-1 group-hover/link:translate-x-1"
                   />
                 </a>
               )}
@@ -94,8 +104,8 @@ export default function CertificationsPage() {
 
         {certs.length === 0 && (
           <div className="col-span-full py-20 text-center">
-            <Award size={64} className="mx-auto text-zinc-800 mb-6" />
-            <p className="text-zinc-500 text-xl font-medium">
+            <Award size={64} className="mx-auto mb-6 text-muted-foreground/35" />
+            <p className="text-lg font-medium text-muted-foreground md:text-xl">
               No certifications listed yet.
             </p>
           </div>

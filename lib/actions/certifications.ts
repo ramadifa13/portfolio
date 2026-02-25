@@ -2,16 +2,25 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { Database } from "@/types/database";
 
-export async function createCertification(data: any) {
-  const supabase = await createClient();
+type CertificationInsert = Database["public"]["Tables"]["certifications"]["Insert"];
+type CertificationUpdate = Database["public"]["Tables"]["certifications"]["Update"];
 
-  // Sanitize data
-  const sanitizedData = {
+function sanitizeCertificationData<T extends { issue_date?: string | null; credential_url?: string | null }>(
+  data: T,
+): T {
+  return {
     ...data,
     issue_date: data.issue_date === "" ? null : data.issue_date,
     credential_url: data.credential_url === "" ? null : data.credential_url,
   };
+}
+
+export async function createCertification(data: CertificationInsert) {
+  const supabase = await createClient();
+
+  const sanitizedData = sanitizeCertificationData(data);
 
   const { data: cert, error } = await supabase
     .from("certifications")
@@ -26,15 +35,10 @@ export async function createCertification(data: any) {
   return cert;
 }
 
-export async function updateCertification(id: string, data: any) {
+export async function updateCertification(id: string, data: CertificationUpdate) {
   const supabase = await createClient();
 
-  // Sanitize data
-  const sanitizedData = {
-    ...data,
-    issue_date: data.issue_date === "" ? null : data.issue_date,
-    credential_url: data.credential_url === "" ? null : data.credential_url,
-  };
+  const sanitizedData = sanitizeCertificationData(data);
 
   const { data: cert, error } = await supabase
     .from("certifications")

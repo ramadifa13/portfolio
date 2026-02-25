@@ -176,6 +176,41 @@ export interface Database {
           created_at?: string | null;
         };
       };
+      certifications: {
+        Row: {
+          id: string;
+          name: string;
+          issuer: string;
+          issue_date: string | null;
+          expiry_date: string | null;
+          credential_id: string | null;
+          credential_url: string | null;
+          image_url: string | null;
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          issuer: string;
+          issue_date?: string | null;
+          expiry_date?: string | null;
+          credential_id?: string | null;
+          credential_url?: string | null;
+          image_url?: string | null;
+          created_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          issuer?: string;
+          issue_date?: string | null;
+          expiry_date?: string | null;
+          credential_id?: string | null;
+          credential_url?: string | null;
+          image_url?: string | null;
+          created_at?: string | null;
+        };
+      };
     };
   };
 }

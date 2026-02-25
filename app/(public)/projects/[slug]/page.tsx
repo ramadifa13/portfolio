@@ -34,27 +34,27 @@ export default async function ProjectDetailPage({
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-20 lg:px-8">
       <Link
         href="/projects"
-        className="text-zinc-400 hover:text-white flex items-center gap-2 mb-12 text-sm transition-colors"
+        className="mb-8 flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground md:mb-12"
       >
         <ArrowLeft size={16} /> Back to projects
       </Link>
 
-      <div className="grid gap-12 lg:grid-cols-3">
+      <div className="grid gap-9 md:gap-12 lg:grid-cols-3">
         {/* Left Column: Content */}
-        <div className="lg:col-span-2 space-y-12">
+        <div className="space-y-9 lg:col-span-2 lg:space-y-12">
           <div>
-            <h1 className="text-4xl md:text-6xl font-extrabold mb-8">
+            <h1 className="mb-5 text-3xl font-extrabold text-foreground sm:text-4xl md:mb-8 md:text-6xl">
               {project.title}
             </h1>
-            <p className="text-xl text-zinc-400 leading-relaxed">
+            <p className="text-base leading-relaxed text-muted-foreground md:text-xl">
               {project.description}
             </p>
           </div>
 
-          <div className="aspect-video relative rounded-3xl overflow-hidden border border-white/10 bg-zinc-900">
+          <div className="relative aspect-video overflow-hidden rounded-3xl border border-border/70 bg-card/70">
             {project.image_url ? (
               <Image
                 src={project.image_url}
@@ -63,15 +63,15 @@ export default async function ProjectDetailPage({
                 className="object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-zinc-600">
+              <div className="flex h-full w-full items-center justify-center text-muted-foreground">
                 No Image
               </div>
             )}
           </div>
 
-          <div className="prose prose-invert max-w-none">
-            <h2 className="text-2xl font-bold mb-4">About the Project</h2>
-            <div className="text-zinc-300 whitespace-pre-wrap leading-relaxed">
+          <div className="max-w-none">
+            <h2 className="mb-4 text-2xl font-bold text-foreground">About the Project</h2>
+            <div className="whitespace-pre-wrap leading-relaxed text-muted-foreground">
               {project.long_description || "No detailed description available."}
             </div>
           </div>
@@ -108,7 +108,7 @@ export default async function ProjectDetailPage({
               {project.tech_stack?.map((tech: string) => (
                 <Badge
                   key={tech}
-                  className="bg-zinc-800 text-zinc-300 border-none px-3 py-1"
+                  className="border-border bg-background/70 px-3 py-1 text-muted-foreground"
                 >
                   {tech}
                 </Badge>
@@ -119,7 +119,7 @@ export default async function ProjectDetailPage({
           <div className="flex flex-col gap-4">
             {project.live_url && (
               <Button
-                className="w-full bg-white text-black hover:bg-zinc-200"
+                className="w-full bg-foreground text-background hover:opacity-90"
                 asChild
               >
                 <a
@@ -134,7 +134,7 @@ export default async function ProjectDetailPage({
             {project.repo_url && (
               <Button
                 variant="outline"
-                className="w-full border-white/10 hover:bg-white/5"
+                className="w-full border-border hover:bg-accent/65"
                 asChild
               >
                 <a
@@ -161,8 +161,8 @@ function CardWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-zinc-900/50 border border-white/5 rounded-2xl p-6">
-      <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 mb-6">
+    <div className="rounded-2xl border border-border/70 bg-card/70 p-6">
+      <h3 className="mb-6 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
         {title}
       </h3>
       {children}
@@ -180,12 +180,12 @@ function MetaItem({
   value: string;
 }) {
   return (
-    <div className="flex items-center gap-4 text-zinc-300">
-      <div className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-400">
+    <div className="flex items-center gap-4 text-foreground">
+      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-background text-muted-foreground">
         <Icon size={16} />
       </div>
       <div>
-        <p className="text-xs text-zinc-500">{label}</p>
+        <p className="text-xs text-muted-foreground">{label}</p>
         <p className="font-medium capitalize">{value}</p>
       </div>
     </div>

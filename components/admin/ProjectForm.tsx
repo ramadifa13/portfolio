@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -74,7 +74,7 @@ export default function ProjectForm({ initialData }: ProjectFormProps) {
   const router = useRouter();
 
   const form = useForm<ProjectFormValues>({
-    resolver: zodResolver(projectSchema) as any,
+    resolver: zodResolver(projectSchema) as Resolver<ProjectFormValues>,
     defaultValues: initialData
       ? {
           title: initialData.title,

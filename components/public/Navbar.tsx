@@ -6,11 +6,13 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ThemeToggle } from "@/components/public/ThemeToggle";
 
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/projects", label: "Projects" },
   { href: "/experience", label: "Experience" },
+  { href: "/certifications", label: "Certifications" },
   { href: "/skills", label: "Skills" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
@@ -27,56 +29,70 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (!isOpen) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   if (pathname?.startsWith("/admin")) return null;
 
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 sm:px-6 lg:px-8",
-        scrolled ? "py-4" : "py-6",
+        "fixed left-0 right-0 top-0 z-50 px-3 transition-all duration-300 sm:px-6 lg:px-8",
+        scrolled ? "py-3" : "py-4",
       )}
     >
       <div
         className={cn(
-          "max-w-7xl mx-auto rounded-full transition-all duration-300 flex items-center justify-between px-6",
+          "mx-auto flex h-14 max-w-7xl items-center justify-between rounded-full px-3 transition-all duration-300 sm:px-6",
           scrolled
-            ? "bg-black/60 backdrop-blur-xl border border-white/10 h-14 shadow-2xl"
-            : "bg-transparent h-14",
+            ? "border border-border/70 bg-background/80 shadow-lg backdrop-blur-xl"
+            : "bg-transparent",
         )}
       >
         <Link
           href="/"
-          className="text-xl font-bold bg-linear-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent hover:scale-105 transition-transform"
+          className="bg-linear-to-r from-indigo-500 to-emerald-500 bg-clip-text text-lg font-extrabold text-transparent transition-transform hover:scale-105 sm:text-xl"
         >
           Portfolio
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden items-center gap-1 md:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                "relative px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300",
+                "relative rounded-full px-3 py-1.5 text-sm font-semibold transition-all duration-300 lg:px-4",
                 pathname === item.href
-                  ? "text-white"
-                  : "text-zinc-400 hover:text-white",
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground",
               )}
             >
               {pathname === item.href && (
                 <motion.div
                   layoutId="nav-bg"
-                  className="absolute inset-0 bg-white/10 border border-white/10 rounded-full -z-10"
+                  className="-z-10 absolute inset-0 rounded-full border border-border/80 bg-card/85"
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
               )}
               {item.label}
             </Link>
           ))}
+          <ThemeToggle className="ml-2 rounded-full border border-border/70 bg-card/70 text-foreground hover:bg-accent/60" />
           <Link
             href="/contact"
-            className="ml-4 px-6 py-2 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold flex items-center gap-2 transition-all hover:shadow-[0_0_20px_rgba(79,70,229,0.4)]"
+            className="ml-3 flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-sm font-bold text-white transition-all hover:bg-indigo-500 hover:shadow-[0_0_20px_rgba(79,70,229,0.3)] lg:px-6"
           >
             Hire Me <ArrowUpRight size={14} />
           </Link>
@@ -84,8 +100,9 @@ export function Navbar() {
 
         {/* Mobile Toggle */}
         <button
-          className="md:hidden p-2 text-white hover:bg-white/5 rounded-full transition-colors"
+          className="rounded-full p-2 text-foreground transition-colors hover:bg-accent/60 md:hidden"
           onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle navigation menu"
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -98,7 +115,7 @@ export function Navbar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-24 left-4 right-4 bg-zinc-950/95 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl overflow-hidden z-51"
+            className="absolute left-3 right-3 top-[4.8rem] z-[60] overflow-hidden rounded-3xl border border-border/80 bg-background/95 p-6 shadow-2xl backdrop-blur-2xl md:hidden"
           >
             <div className="flex flex-col gap-4">
               {navItems.map((item, idx) => (
@@ -112,16 +129,26 @@ export function Navbar() {
                     href={item.href}
                     onClick={() => setIsOpen(false)}
                     className={cn(
-                      "text-2xl font-bold transition-colors block py-2",
+                      "block py-2 text-xl font-extrabold transition-colors",
                       pathname === item.href
-                        ? "text-indigo-400"
-                        : "text-zinc-400",
+                        ? "text-indigo-500 dark:text-indigo-400"
+                        : "text-muted-foreground",
                     )}
                   >
                     {item.label}
                   </Link>
                 </motion.div>
               ))}
+              <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/70 pt-4">
+                <ThemeToggle className="rounded-full border border-border/70 bg-card/70 text-foreground hover:bg-accent/60" />
+                <Link
+                  href="/contact"
+                  onClick={() => setIsOpen(false)}
+                  className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-indigo-500"
+                >
+                  Hire Me <ArrowUpRight size={14} />
+                </Link>
+              </div>
             </div>
           </motion.div>
         )}
